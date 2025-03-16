@@ -217,6 +217,31 @@ noteService.getAll().then(notes =>
 >
 >Await solo funciona dentro de funciones <i>async</i>, y el código en <i>main.jsx</i> no está dentro de una función, por lo que debido a la naturaleza simple de la operación, esta vez nos abstendremos de usar  <i>async</i>.
 
+> [!IMPORTANT]
+> 
+> Actualmente <i>await</i> se puede usar fuera de una función asíncrona, como dice [Aquí](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#top_level_await)
+> 
+> Algunos [casos de uso](https://v8.dev/features/top-level-await#use-cases)
+
+Ahora, el código en el archivo <i>main.jsx</i> podría verse así:
+
+```js
+// ...
+import noteService from './services/notes'
+import noteReducer, { setNotes } from './reducers/noteReducer' // highlight-line
+
+const store = configureStore({
+  reducer: {
+    notes: noteReducer,
+    filter: filterReducer,
+  }
+})
+
+const notes = await noteService.getAll() // highlight-line
+store.dispatch(setNotes(notes)) // highlight-line
+
+```
+
 Sin embargo, decidimos mover la inicialización de las notas al componente <i>App</i> y, como es habitual al obtener datos de un servidor, usaremos el <i>effect hook</i>.
 
 ```js
